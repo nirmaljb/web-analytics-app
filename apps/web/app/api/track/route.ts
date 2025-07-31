@@ -6,12 +6,15 @@ const kafka = new Kafka({
   brokers: ['localhost:9092'],
 });
 
+const producer = kafka.producer();
+let producerConnected = false;
 
-const producer = kafka.producer()
 export async function POST(request: Request) {
-    try {
+    if(!producerConnected) {
         await producer.connect();
-        
+        producerConnected = true;
+    }
+    try {
         const body = await request.json();
 
         const message = await producer.send({
@@ -20,13 +23,19 @@ export async function POST(request: Request) {
         });
 
         console.log(message);
-
-        await producer.disconnect();
-        
         return NextResponse.json({ message: 'Event received!' }, { status: 201 })
-    
     }catch(reason) {
         const message = reason instanceof Error ? reason.message : 'Internal Server Error'
         return NextResponse.json({ message },{ status: 500 });
     }
 }
+
+process.on('SIGINT', async () => {
+    await producer.disconnect();
+    process.exit(0); 
+});
+
+
+
+
+
