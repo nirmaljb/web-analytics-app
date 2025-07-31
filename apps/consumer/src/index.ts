@@ -26,7 +26,8 @@ async function consume() {
                         })
                     }
                 }catch(error) {
-                    throw new Error("INVALID FORMAT OF DATA (NON-JSON)");
+                    console.log("INVALID FORMAT OF DATA (NON-JSON)");
+                    return;
                 }
                 console.log({
                     value: message.value && message.value.toString(),
@@ -41,4 +42,10 @@ async function consume() {
         }
     }
 }
+
+process.on('SIGINT', async () => {
+    await consumer.disconnect();
+    process.exit(0); 
+});
+
 consume();
