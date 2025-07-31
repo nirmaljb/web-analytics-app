@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 interface Data {
     id: number,
     type: string
-    name: string
+    url: string
     createdAt: string
 }
 
@@ -25,16 +25,16 @@ export default function Page() {
                 <tr>
                     <th>ID</th>
                     <th>TYPE</th>
-                    <th>NAME</th>
+                    <th>URL</th>
                     <th>CREATED_AT</th>
                 </tr>
             </thead>
             <tbody>
-                {data && data.map((row, rowIndex) => (
-                    <tr key={rowIndex}>
+                {data && data.map((row) => (
+                    <tr key={row.id}>
                         <td>{row.id}</td>
                         <td>{row.type}</td>
-                        <td>{row.name}</td>
+                        <td>{row.url}</td>
                         <td>{new Date(row.createdAt).toLocaleString()}</td>
                     </tr>
                 ))}
